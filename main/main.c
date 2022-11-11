@@ -75,7 +75,89 @@ void CoreDump_Main()
 
     if(NULL != partition)
     {
-        ESP_LOGI(TAG, "partition found with size: %d", partition->size);
+        ESP_LOGI(TAG, "partition found with size: %ld", partition->size);
+
+
+        esp_core_dump_summary_t *s = malloc(sizeof(esp_core_dump_summary_t));
+        if (s) {
+            if (esp_core_dump_get_summary(s) == ESP_OK) {
+
+                
+                ESP_LOGI(TAG, "Summary:");
+
+                                ESP_LOGI(TAG, "exc_task:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->exc_task, 16);
+
+                ESP_LOGI(TAG, "exc_pc: %ld",s->exc_pc);
+
+                ESP_LOGI(TAG, "core_dump_version: %ld",s->core_dump_version);
+
+                ESP_LOGI(TAG, "app_elf_sha256:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->app_elf_sha256, APP_ELF_SHA256_SZ);
+
+                ESP_LOGI(TAG, "exc_bt_info->bt:");
+                ESP_LOG_BUFFER_HEX(TAG, s->exc_bt_info.bt, 16);
+
+                ESP_LOGI(TAG, "exc_bt_info->depth: %ld",s->exc_bt_info.depth);
+
+                ESP_LOGI(TAG, "exc_bt_info->corrupted: %d",s->exc_bt_info.corrupted);
+
+                ESP_LOGI(TAG, "exc_info->exc_cause: %ld",s->ex_info.exc_cause);
+
+                ESP_LOGI(TAG, "exc_info->exc_vaddr: %ld",s->ex_info.exc_vaddr);
+
+                ESP_LOGI(TAG, "ex_info->exc_a:");
+                ESP_LOG_BUFFER_HEX(TAG, s->ex_info.exc_a, 16);
+
+                ESP_LOGI(TAG, "ex_info->epcx:");
+                ESP_LOG_BUFFER_HEX(TAG, s->ex_info.epcx, EPCx_REGISTER_COUNT);
+
+                /*
+                ESP_LOGI(TAG, "exc_tcb: %ld",s->exc_tcb);
+
+                ESP_LOGI(TAG, "exc_task:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->exc_task, 16);
+
+                ESP_LOGI(TAG, "exc_pc: %ld",s->exc_pc);
+
+                ESP_LOGI(TAG, "core_dump_version: %ld",s->core_dump_version);
+
+                ESP_LOGI(TAG, "app_elf_sha256:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->app_elf_sha256, APP_ELF_SHA256_SZ);
+
+                ESP_LOGI(TAG, "exc_bt_info->bt:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->exc_bt_info->bt, 16);
+
+                ESP_LOGI(TAG, "exc_bt_info->depth: %ld",s->exc_bt_info->depth);
+
+                ESP_LOGI(TAG, "exc_bt_info->corrupted: %d",s->exc_bt_info->corrupted);
+
+                ESP_LOGI(TAG, "exc_info->exc_cause: %d",s->exc_info->exc_cause);
+
+                ESP_LOGI(TAG, "exc_info->exc_vaddr: %d",s->exc_info->exc_vaddr);
+
+                ESP_LOGI(TAG, "ex_info->exc_a:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->ex_info->exc_a, 16);
+
+                ESP_LOGI(TAG, "ex_info->epcx:");
+                ESP_LOG_BUFFER_CHAR(TAG, s->ex_info->epcx, EPCx_REGISTER_COUNT);
+                */
+                
+                
+                
+            }
+            else{
+                ESP_LOGE(TAG,"Summary not found");
+            }
+        }
+        else{
+                ESP_LOGE(TAG,"Summary Null");
+            }
+        free(s);
+
+
+        ESP_LOGE(TAG,"Actual Core Dump:");
+
 
         if(out_cd_size > 0)
         {
@@ -100,8 +182,9 @@ void CoreDump_Main()
         }
         else
         {
-        	ESP_LOGI(TAG, "partition found with size: %d", partition->size);
+        	ESP_LOGI(TAG, "partition found with size: %ld", partition->size);
         }
+        
 
     }
     else
